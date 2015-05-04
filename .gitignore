@@ -1,0 +1,17 @@
+.settings/
+.DS_Store
+.idea/
+.gradle
+build/
+*.keystore
+out/
+*.iml
+*/target/
+lib/
+target/
+logs/
+.project
+*/.classpath
+*/.project
+*.log
+package.json
