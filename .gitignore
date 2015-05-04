@@ -15,3 +15,4 @@ logs/
 */.project
 *.log
 package.json
+node_modules

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<jxhl xmlns="http://halo-studio.com/jxhl"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://halo-studio.com/jxhl ../jxhl.xsd">
+ 
+    <panel dock="fill" border_width="1" css_text="border-style:solid; border-color:#cccccc;" local_var="top_container">
+        <panel dock="top" height="30" id="top" border_width="0,0,1,0" css_text="border-style:solid; border-color:#cccccc; background:#fcfcfc;">
+            <label dock="fill" margin="1,0,0,5" css_text="line-height:28px; color:blue; font-weight:bold;">Title section</label>
+        </panel>
+        <panel dock="left" width="100" border_width="0,1,0,0" css_text="border-style:solid; border-color:#cccccc;background:#fcfcfc;">
+            <label dock="center" width="100" height="60" margin="5">Left</label>
+        </panel>
+        <panel dock="bottom" height="26" css_text="background:#fcfcfc; line-height:26px; color:#999;">
+            <label dock="none" margin="0,10,0,10">Bottom section</label>
+        </panel>
+        <panel dock="fill" border_width="0,0,1,0" css_text="border-style:solid; border-color:#cccccc;">
+            <frame local_var="frame_test" dock="left" width="200" height="60" src="https://www.github.com" frame_scrolling="auto"></frame>
+            <label dock="center" local_var="test_var">Center Content</label>
+        </panel>
+    </panel>
+
+    <runnable>
+        <![CDATA[
+        var container = jxhl$container;
+        var args = jxhl$arguments;
+        console.log(frame_test, jxhl$container, jxhl$arguments, jxhl$localVars);
+        ]]>
+    </runnable>
+</jxhl>
