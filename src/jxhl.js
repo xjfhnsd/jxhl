@@ -5,10 +5,10 @@
         this.useCache = false;
         this.layoutCache = {};
     }
-    
+
     $jxhl.prototype.newControl = function (node, baseid) {
         var basecontrol = document.createElement("div");
-        
+
         if (node) {
             //render layout properties
             basecontrol.setAttribute("jxhl_control", node.nodeName);
@@ -44,7 +44,7 @@
                 basecontrol.style.khtmlOpacity = opaF;
                 basecontrol.style.filter = "alpha(opacity=" + parseInt(opaF * 100) + ")";
             }
-            
+
             var margin = node.getAttribute("margin");
             var padding = node.getAttribute("padding");
             var border = node.getAttribute("border_width");
@@ -60,7 +60,7 @@
                 basecontrol.padding = [parseInt(padding), parseInt(padding), parseInt(padding), parseInt(padding)];
             else
                 basecontrol.padding = eval("([" + padding + "])");
-            
+
             if (!border)
                 basecontrol.border = [0, 0, 0, 0];
             else if (border.indexOf(",") == -1)
@@ -97,10 +97,10 @@
                 this.runnableObject["jxhl_inner_var$" + baseid][node.getAttribute("local_var")] = basecontrol;
             }
         }
-        
+
         return basecontrol;
     }
-    
+
     $jxhl.prototype.parseControl = function (node, p, baseid) {
         //3-text, 4-cdata, 8-comment
         if (node.nodeType == 4 || node.nodeType == 3 || node.nodeType == 8)
@@ -115,7 +115,7 @@
             this.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"] = this.getInnerHtml(node);
             return;
         }
-        
+
         if (!p.childControls) p.childControls = [];
         var bc = this.newControl(node, baseid);
         bc.style.position = "absolute";
@@ -160,7 +160,7 @@
             for (var i = 0; i < node.childNodes.length; i++)
                 this.parseControl(node.childNodes[i], bc, baseid);
         }
-        
+
         function recurseHtmlLocalVar() {
             var ele = arguments[0];
             if (ele.nodeType != 1)
@@ -178,7 +178,7 @@
             }
         }
     }
-    
+
     $jxhl.prototype.calcControlPostion = function (ctl) {
         if (ctl.parentContainer) {
             if (!ctl.visible) {
@@ -193,7 +193,7 @@
             var p = ctl.parentContainer;
             var pSize = this.calcElementSize(p);
             if (!p.region) p.region = { sx: 0, sy: 0, ex: pSize.width, ey: pSize.height };
-            
+
             var ctlSize = this.calcElementSize(ctl);
             //calc overflow
             //auto(not calc region), top, center, bottom, left, right, fill(left full), fix(full, not calc region), float(not calc region, not set x,y)
@@ -205,33 +205,33 @@
                 case "auto":
                     __w = ctlSize.width - ctl.margin[1] - ctl.margin[3] - ctl.border[1] - ctl.border[3];
                     __h = ctlSize.height - ctl.margin[0] - ctl.margin[2] - ctl.border[0] - ctl.border[2];
-                    
+
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-    
+
                     ctl.style.position = "relative";
-                    
+
                     ctl.style.left = ctl.jxhlLeft + ctl.margin[3] + "px";
                     ctl.style.top = ctl.jxhlTop + ctl.margin[0] + "px";
                     break;
                 case "none":
                     __w = ctlSize.width - ctl.margin[1] - ctl.margin[3] - ctl.border[1] - ctl.border[3];
                     __h = ctlSize.height - ctl.margin[0] - ctl.margin[2] - ctl.border[0] - ctl.border[2];
-    
+
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-    
+
                     ctl.region = { sx: 0, sy: 0, ex: 0, ey: 0 };
-    
+
                     ctl.style.position = "relative";
-                    if(ctl.jxhlWidth)
+                    if (ctl.jxhlWidth)
                         ctl.style.width = __w + "px";
-                    if(ctl.jxhlHeight)
+                    if (ctl.jxhlHeight)
                         ctl.style.height = __h + "px";
                     ctl.style.left = ctl.jxhlLeft + ctl.margin[3] + "px";
                     ctl.style.top = ctl.jxhlTop + ctl.margin[0] + "px";
@@ -241,15 +241,15 @@
                     __h = ctlSize.height - ctl.margin[0] - ctl.margin[2] - ctl.border[0] - ctl.border[2];
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-                    
+
                     ctl.style.left = p.region.sx + ctl.margin[3] + "px";
                     ctl.style.top = p.region.sy + ctl.margin[0] + "px";
-                    
+
                     p.region.sy += ctlSize.height;
                     break;
                 case "bottom":
@@ -257,15 +257,15 @@
                     __h = ctlSize.height - ctl.margin[0] - ctl.margin[2] - ctl.border[0] - ctl.border[2];
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-                    
+
                     ctl.style.left = p.region.sx + ctl.margin[3] + "px";
                     ctl.style.top = p.region.ey - ctlSize.height + ctl.margin[0] + "px";
-                    
+
                     p.region.ey -= ctlSize.height;
                     break;
                 case "left":
@@ -273,15 +273,15 @@
                     __h = p.region.ey - p.region.sy - ctl.margin[0] - ctl.margin[2];
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-                    
+
                     ctl.style.left = p.region.sx + ctl.margin[3] + "px";
                     ctl.style.top = p.region.sy + ctl.margin[0] + "px";
-                    
+
                     p.region.sx += ctlSize.width;
                     break;
                 case "right":
@@ -289,15 +289,15 @@
                     __h = p.region.ey - p.region.sy - ctl.margin[0] - ctl.margin[2];
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-                    
+
                     ctl.style.left = p.region.ex - ctlSize.width + ctl.margin[3] + "px";
                     ctl.style.top = p.region.sy + ctl.margin[0] + "px";
-                    
+
                     p.region.ex -= ctlSize.width;
                     break;
                 case "fill":
@@ -305,15 +305,15 @@
                     __h = p.region.ey - p.region.sy - ctl.margin[0] - ctl.margin[2];
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-                    
+
                     ctl.style.left = p.region.sx + ctl.margin[3] + "px";
                     ctl.style.top = p.region.sy + ctl.margin[0] + "px";
-                    
+
                     p.region.sx = p.region.ex;
                     p.region.sy = p.region.ey;
                     break;
@@ -322,30 +322,30 @@
                     __h = pSize.height - p.margin[0] - p.margin[2];
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-                    
+
                     ctl.style.left = "0px";
                     ctl.style.top = "0px";
                     break;
                 case "center":
                     __w = Math.min(ctlSize.width - ctl.margin[1] - ctl.margin[3] - ctl.border[1] - ctl.border[3], p.region.ex - p.region.sx - ctl.margin[1] - ctl.margin[3]);
                     __h = Math.min(ctlSize.height - ctl.margin[0] - ctl.margin[2] - ctl.border[0] - ctl.border[2], p.region.ey - p.region.sy - ctl.margin[0] - ctl.margin[2]);
-                    
+
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
+
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
-                    
+
                     ctl.style.left = p.region.sx + parseInt((p.region.ex - p.region.sx - __w) / 2) + "px";
                     ctl.style.top = p.region.sy + parseInt((p.region.ey - p.region.sy - __h) / 2) + "px";
-                    
+
                     p.region.sx = p.region.ex;
                     p.region.sy = p.region.ey;
                     break;
@@ -354,12 +354,12 @@
                     __h = ctlSize.height;
                     __w = Math.max(__w, 0);
                     __h = Math.max(__h, 0);
-                    
+
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
-                    
-                    if(ctl.jxhlWidth)
+
+                    if (ctl.jxhlWidth)
                         ctl.style.width = __w + "px";
-                    if(ctl.jxhlHeight)
+                    if (ctl.jxhlHeight)
                         ctl.style.height = __h + "px";
                     ctl.style.position = "relative";
                     ctl.style.float = "left";
@@ -373,30 +373,30 @@
                 ctl.jxhl_frame.style.height = __h + "px";
             }
         }
-        
+
         if (ctl.childControls) {
             for (var i = 0; i < ctl.childControls.length; i++) {
                 this.calcControlPostion(ctl.childControls[i]);
             }
         }
     }
-    
+
     $jxhl.prototype.calcElementSize = function (ele) {
         var w = ele.jxhlWidth || 0;
         var h = ele.jxhlHeight || 0;
-        
+
         if (typeof (jQuery) != "undefined") {
             w = Math.max(w, $(ele).outerWidth());
             h = Math.max(h, $(ele).outerHeight());
             return { width: w, height: h };
         }
-        
+
         w = Math.max(ele.offsetWidth || 0, ele.clientWidth || 0, w);
-        
+
         if (ele == document.body)
             w = Math.max(w, document.documentElement.clientWidth || 0, document.documentElement.offsetWidth || 0, document.documentElement.scrollWidth || 0,
-                         document.body.clientWidth || 0, document.body.offsetWidth || 0, document.body.scrollWidth || 0);
-        
+                document.body.clientWidth || 0, document.body.offsetWidth || 0, document.body.scrollWidth || 0);
+
         h = Math.max(ele.offsetHeight || 0, ele.clientHeight || 0, h);
         if (ele.border && !ele.hasCalcBorder) {
             h = h - Math.max(ele.border[0], 0) - Math.max(ele.border[2], 0);
@@ -405,11 +405,11 @@
         }
         if (ele == document.body)
             h = Math.max(h, document.documentElement.clientHeight || 0, document.documentElement.offsetHeight || 0, document.documentElement.scrollHeight || 0,
-                         document.body.clientHeight || 0, document.body.offsetHeight || 0, document.body.scrollHeight || 0);
-        
+                document.body.clientHeight || 0, document.body.offsetHeight || 0, document.body.scrollHeight || 0);
+
         return { width: w, height: h };
     }
-    
+
     $jxhl.prototype.clearControlRegion = function (ctl) {
         ctl.region = null;
         if (ctl.childControls) {
@@ -418,12 +418,12 @@
             }
         }
     }
-    
+
     $jxhl.prototype.clearChildControls = function (ctl) {
         if (ctl.childControls)
             ctl.childControls = null;
     }
-    
+
     $jxhl.prototype.toBoolean = function (val) {
         if (typeof (val) == "string") {
             switch (val.toLowerCase()) {
@@ -438,11 +438,11 @@
         }
         return !!val;
     }
-    
+
     $jxhl.prototype.handleError = function (message, title) {
         alert(message);
     }
-    
+
     $jxhl.prototype.xmlhttp = function () {
         if (typeof (XMLHttpRequest) != "undefined")
             return new XMLHttpRequest();
@@ -454,31 +454,31 @@
      */
     $jxhl.prototype.loadXml = function (path, container, sendArgs, callback) {
         var self = this;
-    
-        if(this.useCache && this.layoutCache[path]){
+
+        if (this.useCache && this.layoutCache[path]) {
             self.initComplete(this.layoutCache[path], container, sendArgs, callback);
             return;
         }
-        
-        if (typeof (jQuery) != "undefined"){
+
+        if (typeof (jQuery) != "undefined") {
             $.ajax({
-                   url: path,
-                   type: 'GET',
-                   dataType: 'text',
-                   timeout: 60000,
-                   error: function (xml) {
-                        self.handleError("unable to load file " + path + " : " + xml);
-                   },
-                   success: function (xml) {
-                        var xmlDom = self.loadXmlFromString(xml);
-                        if(self.useCache)
-                            self.layoutCache[path] = xmlDom;
-                        self.initComplete(xmlDom, container, sendArgs, callback);
-                   }
+                url: path,
+                type: 'GET',
+                dataType: 'text',
+                timeout: 60000,
+                error: function (xml) {
+                    self.handleError("unable to load file " + path + " : " + xml);
+                },
+                success: function (xml) {
+                    var xmlDom = self.loadXmlFromString(xml);
+                    if (self.useCache)
+                        self.layoutCache[path] = xmlDom;
+                    self.initComplete(xmlDom, container, sendArgs, callback);
+                }
             });
             return;
         }
-        
+
         var xh = this.xmlhttp();
         xh.open("GET", path, true);
         xh.onreadystatechange = function () {
@@ -488,14 +488,14 @@
                         && typeof (DOMParser) != "undefined" && DOMParser && xh.responseText) {
                         var parser = new DOMParser();
                         var doc = parser.parseFromString(xh.responseText, 'text/xml');
-                        if(self.useCache)
+                        if (self.useCache)
                             self.layoutCache[path] = doc;
                         self.initComplete(doc, container, sendArgs, callback);
                         return;
                     }
                     if (!xh.responseXML)
                         return self.handleError("unable to load file " + path + " : invalid xml format");
-                    if(self.useCache)
+                    if (self.useCache)
                         self.layoutCache[path] = xh.responseXML;
                     self.initComplete(xh.responseXML, container, sendArgs, callback);
                     return;
@@ -525,7 +525,7 @@
             return null;
         }
     }
-    
+
     $jxhl.prototype.getInnerHtml = function (node) {
         var html;
         if (this.toBoolean(node.getAttribute("rawhtml")))
@@ -534,9 +534,9 @@
             html = get_node_innerxml(node);
         html = html.replace(/(^\s+|\s+$)/g, "");
         //fixed ie8/7
-        html = html.replace(/<!\[CDATA\[/g, "").replace(/\]\]>/g,"");
+        html = html.replace(/<!\[CDATA\[/g, "").replace(/\]\]>/g, "");
         return html;
-        
+
         function get_node_innertext(node) {
             try {
                 var s = node.text;
@@ -558,13 +558,13 @@
             }
             return arr.join("");
         }
-        
+
         function get_node_innerxml(node) {
             var arr = [];
             var childs = node.childNodes;
-            
+
             if ("xml" in node) {
-                for (var i = 0; i < childs.length; i++){
+                for (var i = 0; i < childs.length; i++) {
                     arr[i] = childs.item(i).xml;
                 }
             }
@@ -579,7 +579,7 @@
                 }
             }
             else {
-                
+
             }
             return arr.join("");
         }
@@ -620,7 +620,7 @@
         var interval = null;
         var self = this;
         interval = setInterval(DoMonitor, 100);
-        
+
         function DoMonitor() {
             if (!c) {
                 if (interval) {
@@ -646,11 +646,11 @@
                     return;
                 }
                 isResizing = true;
-                
+
                 var ele = c.isroot ? c : c.parentContainer;
                 self.notifyResize(ele);
                 ele.oldSize = currSize;
-                
+
                 isResizing = false;
             }
         }
@@ -664,37 +664,34 @@
             !this.runnableObject["jxhl_inner_var$" + baseid] ||
             !this.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"])
             return;
-        
+
         var self = this;
         function _run() {
-    
+
             var localvar_names = [];
-        	var localvar_evals = [];
+            var localvar_evals = [];
             for (var n in self.runnableObject["jxhl_inner_var$" + baseid]) {
                 if (n != "jxhl$runnable") {
                     //eval("var " + n + "=self.runnableObject['jxhl_inner_var$" + baseid + "']['" + n + "'];");
                     localvar_evals.push("var " + n + "=self.runnableObject['jxhl_inner_var$" + baseid + "']['" + n + "'];");
                 }
-                if (n.indexOf("jxhl$") == -1)
-                {
+                if (n.indexOf("jxhl$") == -1) {
                     localvar_names.push(n);
                 }
             }
             var runnableFunc = "new function(){ \
-                "+localvar_evals.join("")+"\
-                var jxhl$localVars = ["+localvar_names.join(",")+"]; \
-                "+self.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"]+" \
+                "+ localvar_evals.join("") + "\
+                var jxhl$localVars = ["+ localvar_names.join(",") + "]; \
+                "+ self.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"] + " \
                 }();";
-            try
-            {
+            try{
                 eval(runnableFunc);
             }
-            catch(x)
-            {
+            catch (x) {
                 alert("runnable node parse error : " + x.message);
             }
         }
-        
+
         _run();
     }
     
@@ -721,7 +718,7 @@
             if (pathOrText.indexOf("<") > 0)
                 pathOrText = pathOrText.substr(1);
             xmldoc = this.loadXmlFromString(pathOrText);
-            
+
             this.initComplete(xmldoc, container, sendArgs, callback);
         }
         else {
@@ -729,17 +726,16 @@
             //IOS7 can not support async:false
             this.loadXml(pathOrText, container, sendArgs, callback);
         }
-        
+
     }
     
     /**
      * init completely, callback will apply, arguments will be transfered to runnable node scripts
      */
-    $jxhl.prototype.initComplete = function (xmldoc, container, sendArgs, callback)
-    {
+    $jxhl.prototype.initComplete = function (xmldoc, container, sendArgs, callback) {
         if (!xmldoc)
             return;
-        
+
         this.clearChildControls(container);
         this.clearControlRegion(container);
         container.innerHTML = "";
@@ -752,18 +748,18 @@
         this.runnableObject["jxhl_inner_var$" + container.id]["jxhl$container"] = container;
         //define jxhl$arguments for runnable scope, which is sendArgs
         this.runnableObject["jxhl_inner_var$" + container.id]["jxhl$arguments"] = sendArgs;
-        
+
         var de = xmldoc.documentElement || xmldoc;
         de = de.cloneNode(true);
         for (var i = 0; i < de.childNodes.length; i++)
             this.parseControl(de.childNodes[i], container, container.id);
-        
+
         this.calcControlPostion(container);
         this.monitorElement(container);
-        
+
         this.buildRunnable(container.id);
-        
-        if(typeof(callback)=="function")
+
+        if (typeof (callback) == "function")
             callback();
     }
     
@@ -786,4 +782,4 @@
         if (!window.jxhl)
             window.jxhl = new $jxhl();
     }
-}());
+} ());
