@@ -16,11 +16,11 @@
             if (node.getAttribute("id")) basecontrol.id = baseid + "_" + node.getAttribute("id");
             if (node.getAttribute("css_name")) basecontrol.className = node.getAttribute("css_name");
             if (node.getAttribute("css_text")) basecontrol.style.cssText = node.getAttribute("css_text");
-            if (node.getAttribute("width")) basecontrol.jxhlWidth = parseInt(node.getAttribute("width"));
-            if (node.getAttribute("height")) basecontrol.jxhlHeight = parseInt(node.getAttribute("height"));
-            if (node.getAttribute("left")) basecontrol.jxhlLeft = parseInt(node.getAttribute("left"));
+            if (node.getAttribute("width")) basecontrol.jxhlWidth = node.getAttribute("width");
+            if (node.getAttribute("height")) basecontrol.jxhlHeight = node.getAttribute("height");
+            if (node.getAttribute("left")) basecontrol.jxhlLeft = node.getAttribute("left");
             else basecontrol.jxhlLeft = 0;
-            if (node.getAttribute("top")) basecontrol.jxhlTop = parseInt(node.getAttribute("top"));
+            if (node.getAttribute("top")) basecontrol.jxhlTop = node.getAttribute("top");
             else basecontrol.jxhlTop = 0;
             if (node.getAttribute("dock")) basecontrol.dock = node.getAttribute("dock");
             else basecontrol.dock = "auto";//auto(not calc region), top, center, bottom, left, right, fill(left full), fix(full, not calc region), float(not calc region, not set x,y)
@@ -216,8 +216,8 @@
 
                     ctl.style.position = "relative";
 
-                    ctl.style.left = ctl.jxhlLeft + ctl.margin[3] + "px";
-                    ctl.style.top = ctl.jxhlTop + ctl.margin[0] + "px";
+                    ctl.style.left = this.convertElementUnit(ctl.jxhlLeft, ctl, 'h') + ctl.margin[3] + "px";
+                    ctl.style.top = this.convertElementUnit(ctl.jxhlTop, ctl, 'v') + ctl.margin[0] + "px";
                     break;
                 case "none":
                     __w = ctlSize.width - ctl.margin[1] - ctl.margin[3] - ctl.border[1] - ctl.border[3];
@@ -229,12 +229,12 @@
                     ctl.region = { sx: 0, sy: 0, ex: 0, ey: 0 };
 
                     ctl.style.position = "relative";
-                    if (ctl.jxhlWidth)
+                    if (this.convertElementUnit(ctl.jxhlWidth, ctl, 'h'))
                         ctl.style.width = __w + "px";
-                    if (ctl.jxhlHeight)
+                    if (this.convertElementUnit(ctl.jxhlHeight, ctl, 'v'))
                         ctl.style.height = __h + "px";
-                    ctl.style.left = ctl.jxhlLeft + ctl.margin[3] + "px";
-                    ctl.style.top = ctl.jxhlTop + ctl.margin[0] + "px";
+                    ctl.style.left = this.convertElementUnit(ctl.jxhlLeft, ctl, 'h') + ctl.margin[3] + "px";
+                    ctl.style.top = this.convertElementUnit(ctl.jxhlTop, ctl, 'v') + ctl.margin[0] + "px";
                     break;
                 case "top":
                     __w = p.region.ex - p.region.sx - ctl.margin[1] - ctl.margin[3];
@@ -340,6 +340,11 @@
 
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
 
+                    // fix bug : when not set width or height, the calcuated value needs to add 1px
+                    if (!this.convertElementUnit(ctl.jxhlWidth, ctl, 'h'))
+                        __w++;
+                    if (!this.convertElementUnit(ctl.jxhlHeight, ctl, 'v'))
+                        __h++;
                     ctl.style.width = __w + "px";
                     ctl.style.height = __h + "px";
 
@@ -357,9 +362,9 @@
 
                     ctl.region = { sx: 0, sy: 0, ex: __w, ey: __h };
 
-                    if (ctl.jxhlWidth)
+                    if (this.convertElementUnit(ctl.jxhlWidth, ctl, 'h'))
                         ctl.style.width = __w + "px";
-                    if (ctl.jxhlHeight)
+                    if (this.convertElementUnit(ctl.jxhlHeight, ctl, 'v'))
                         ctl.style.height = __h + "px";
                     ctl.style.position = "relative";
                     ctl.style.float = "left";
@@ -380,10 +385,38 @@
             }
         }
     }
+    
+    /**
+     * convert width, height, top, left to a real value
+     * @param {String} v attribute value
+     * @param {Element} ele element
+     * @param {String} mode h=Horizontal(width,left),v=Vertical(height,top)
+     */
+    $jxhl.prototype.convertElementUnit = function (v, ele, mode) {
+        if (typeof v == 'undefined' || v === null || v === '') return null;
+        //convert v to string
+        v = v + '';
+        if (v.indexOf('%') != (v.length - 1) && v.indexOf('\*') != (v.length - 1)) {
+            return parseInt(v);
+        }
+        var pSize = this.calcElementSize(ele.parentNode, true);
+        var ratio = 0, sV = v.substr(0, v.length - 1), baseNumber = mode == 'h' ? pSize.width : pSize.height;
+        if (v.indexOf('%') == v.length - 1) {
+            // %
+            if (sV.length == 0) sV = '100';
+            ratio = parseFloat(sV) / 100;
+        }
+        else {
+            // *
+            if (sV.length == 0) sV = '1';
+            ratio = parseFloat(sV);
+        }
+        return parseInt(baseNumber * ratio + '');
+    }
 
-    $jxhl.prototype.calcElementSize = function (ele) {
-        var w = ele.jxhlWidth || 0;
-        var h = ele.jxhlHeight || 0;
+    $jxhl.prototype.calcElementSize = function (ele, ignoreJxhl) {
+        var w = ignoreJxhl ? 0 : (this.convertElementUnit(ele.jxhlWidth, ele, 'h') || 0);
+        var h = ignoreJxhl ? 0 : (this.convertElementUnit(ele.jxhlHeight, ele, 'v') || 0);
 
         if (typeof (jQuery) != "undefined") {
             w = Math.max(w, $(ele).outerWidth());
@@ -684,7 +717,7 @@
                 var jxhl$localVars = ["+ localvar_names.join(",") + "]; \
                 "+ self.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"] + " \
                 }();";
-            try{
+            try {
                 eval(runnableFunc);
             }
             catch (x) {
@@ -697,6 +730,11 @@
     
     /**
      * init xml layout with arguments and callback
+     * @param {String} pathOrText layout file path or xml text
+     * @param {Object} c container id or container dom element
+     * @param {String} argType text(pathOrText is xml)/path(pathOrText is path)
+     * @param {Object} sendArgs arguments that used in runnable node as jxhl$arguments
+     * @param {Function} callback function will be called after layout render
      */
     $jxhl.prototype.init = function (pathOrText, c, argType, sendArgs, callback) {
         var container = document.body;

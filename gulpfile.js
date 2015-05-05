@@ -1,11 +1,16 @@
 var gulp = require('gulp'),
   uglify = require('gulp-uglify'),
-  jshint = require('gulp-jshint');
+  jshint = require('gulp-jshint')
+  
+var config = {
+  mangle: { except: ['define', 'require', 'module', 'exports'] },
+  compress: false
+};
 
 gulp.task('minify', function () {
   gulp.src('src/*.js')
-    .pipe(uglify())
-    .pipe(jshint())    
+    .pipe(uglify(config))
+    .pipe(jshint())
     .pipe(gulp.dest('dest'));
 });
 

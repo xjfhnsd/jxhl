@@ -6,25 +6,53 @@
         body {
             margin: 0px;
             padding: 0px;
+            font-family: 'Myriad Set Pro', 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif;
+        }
+        nav{
+            line-height: 23px;
+        }
+        nav a{
+            color:blue;
+            font-size:20px;
+            margin-right:6px;
+            text-decoration: underline;
+            cursor:pointer;
+        }
+        .location {
+            font-size:28px;
+            margin-top:20px;
+            color:#333;
+        }
+        .layout-name {
+            color:cornflowerblue;
         }
     </style>
 </head>
 <body>
-    <div id="firstdiv" style="margin:60px 0px 0px 60px; width:760px; height:420px; border:0px solid black;"></div>
-    <div style=""><span onclick="testclick()">test</span></div>
-
-    <script type="text/javascript" src="../dest/jxhl.js"></script>
+    <div style="margin:30px 0px 0px 60px;">
+        <nav>
+            <a onclick="loadView('overview')">Overview</a>
+            <a onclick="loadView('percent-width')">Percent width</a>
+            <a onclick="loadView('include')">Inlcude Layout</a>
+        </nav>
+        <section>
+            <header id="location" class="location">
+                
+            </header>
+        </section> 
+    </div>
+    <div id="firstdiv" style="margin:0px 0px 0px 60px; width:760px; height:420px; border:0px solid black;">
+        
+    </div>
+        
+    <script type="text/javascript" src="../src/jxhl.js"></script>
     <script type="text/javascript">
-
-        jxhl.init("sample1.xml", "firstdiv");
-
-
-        function testclick() {
-            var firstdiv = document.getElementById("firstdiv");
-            firstdiv.style.width = "1000px";
-            firstdiv.style.height = "600px";
+        function loadView(name){
+            jxhl.init(name+'.xml', 'firstdiv', null, null, function(){
+                document.getElementById('location').innerHTML = 'current layout : <span class="layout-name">' + name + '</span>';
+            });
         }
-
+        loadView("overview");
     </script>
 </body>
 </html>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<jxhl xmlns="http://halo-studio.com/jxhl"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://halo-studio.com/jxhl ../jxhl.xsd">
+ 
+    <panel dock="fill" border_width="1" css_text="border-style:solid; border-color:#cccccc;" local_var="top_container">
+        <panel dock="top" height="30%" id="top" border_width="0,0,1,0" css_text="border-style:solid; border-color:#cccccc; background:#fcfcfc;">
+            <label dock="fill" margin="1,0,0,5" css_text="line-height:28px; color:blue; font-weight:bold;">V - 30%</label>
+        </panel>
+        <panel dock="left" width="20%" border_width="0,1,0,0" css_text="border-style:solid; border-color:#cccccc;background:#fcfcfc;">
+            <label dock="center">H - 20%</label>
+        </panel>
+        <panel dock="bottom" height="0.1*" css_text="background:#fcfcfc; color:#999; vertical-align:middle; display:flex; ">
+            <label dock="none" margin="0,10,0,10" css_text="margin-top:auto; margin-bottom:auto;">Right Bottom (H - 0.1*)</label>
+        </panel>
+        <panel dock="fill" border_width="0,0,1,0" css_text="border-style:solid; border-color:#cccccc;">
+            <panel dock="left" width="33.3%" css_text="background:blue; text-align:center; color:white;">
+                <label dock="center">Right Center Left (H - 33.3%)</label>
+            </panel>
+            <panel dock="left" width="0.334*" css_text="background:yellow; text-align:center;">
+                <label dock="center">Right Center Right (H - 0.334*)</label>
+            </panel>
+            <panel dock="fill" css_text="text-align:center;">
+                <label dock="center">Right Center Right (H - 33.3%)</label>
+            </panel>
+        </panel>
+    </panel>
+
+    <runnable>
+        <![CDATA[
+        ]]>
+    </runnable>
+</jxhl>
