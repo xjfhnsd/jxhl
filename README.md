@@ -12,7 +12,7 @@ It compatibles with IE7+, Chrome, Safari, Firefox, Opera and Mobile browsers on 
 
 ## **syntax**
 
-> Jxhl is based on xml to define a few tag to render html tag,  we name it ***jxhl control***. Every jxhl tag has some defined attributes which will render as html tag attributes or style, let us name it ***jxhl attribute***.
+> Jxhl is based on xml to define a few tags to render html tags,  we name it ***jxhl control***. Every jxhl tag has some defined attributes which will render as html tag attributes or style, let us name it ***jxhl attribute***.
 
 ### Jxhl control
  - panel  -- *render as div tag, just can contain jxhl controls as children*
