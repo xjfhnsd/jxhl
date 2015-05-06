@@ -23,7 +23,7 @@ It compatibles with IE7+, Chrome, Safari, Firefox, Opera and Mobile browsers on 
  - runnable 
 
 > **runnable** is a very important control that will not render as html code,  it explains to a layout scope javascript block, the runnable code will run after the xml rendered to html.
-> Each xml layout file can be used as a scope, it just can contains a runnable control, the javascript code in runnable contains 3 variables (`jxhl$container`, `jxhl$argument`, `jxhl$localVars`) and local_var variables defined in jxhl attribute.
+>      Each xml layout file can be used as a scope, it just can contains a runnable control, the javascript code in runnable contains 3 variables (`jxhl$container`, `jxhl$argument`, `jxhl$localVars`) and local_var variables defined in jxhl attribute.
 
 ### Jxhl attribute
 >**dock** is the most important attribute to set jxhl control's position, it makes the html element display to any place you want to play.     
@@ -44,13 +44,17 @@ It compatibles with IE7+, Chrome, Safari, Firefox, Opera and Mobile browsers on 
  - template -- *include a layout file*
  - template_args -- *it just can be one javascript object type variable, and it must be defined in runnable scope or global scope* 
 
+
 ## **Jxhl box model**
 
 
 ## **public methods**
 `jxhl.getElement("jxhl id attribute",containerElement)` //get layout scope element by jxhl id attribute
+
 `jxhl.notifyResize(containerElement)` //notify the container to adjust size and position
+
 `jxhl.init('layout file path', containerIdOrElement, 'text or path', runnableArguments, callbackFunction);` // init a layout file, then append to container
+
 
 ## **layout demo**
 
