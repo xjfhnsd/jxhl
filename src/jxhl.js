@@ -96,6 +96,11 @@
                 && node.getAttribute("local_var") != "jxhl$arguments") {
                 this.runnableObject["jxhl_inner_var$" + baseid][node.getAttribute("local_var")] = basecontrol;
             }
+            
+            //register template
+            if(node.getAttribute("template")){
+                this.runnableObject["jxhl_inner_template$" + baseid].push({target:basecontrol, template:node.getAttribute("template"), args:node.getAttribute("template_args")}); 
+            }
         }
 
         return basecontrol;
@@ -121,6 +126,7 @@
         bc.style.position = "absolute";
         bc.isroot = false;
         bc.parentContainer = p;
+       
         //dock/align/margin/padding
         switch (ctlname) {
             case "html":
@@ -180,7 +186,7 @@
     }
 
     $jxhl.prototype.calcControlPostion = function (ctl) {
-        if (ctl.parentContainer) {
+        if (ctl.parentContainer && (typeof ctl.templateRoot == "undefined" || !ctl.templateRoot)) {
             if (!ctl.visible) {
                 ctl.style.display = "none";
                 ctl.jxhl_runtime_visible = "disable";
@@ -192,6 +198,7 @@
             }
             var p = ctl.parentContainer;
             var pSize = this.calcElementSize(p);
+            if(p.xxregion) console.log(p.id, pSize);
             if (!p.region) p.region = { sx: 0, sy: 0, ex: pSize.width, ey: pSize.height };
 
             var ctlSize = this.calcElementSize(ctl);
@@ -378,6 +385,9 @@
                 ctl.jxhl_frame.style.height = __h + "px";
             }
         }
+        
+        if(typeof ctl.templateRoot != "undefined" && ctl.templateRoot)
+            ctl.templateRoot = null;
 
         if (ctl.childControls) {
             for (var i = 0; i < ctl.childControls.length; i++) {
@@ -489,7 +499,7 @@
         var self = this;
 
         if (this.useCache && this.layoutCache[path]) {
-            self.initComplete(this.layoutCache[path], container, sendArgs, callback);
+            self.initComplete(this.layoutCache[path], container, sendArgs, callback, path);
             return;
         }
 
@@ -506,7 +516,7 @@
                     var xmlDom = self.loadXmlFromString(xml);
                     if (self.useCache)
                         self.layoutCache[path] = xmlDom;
-                    self.initComplete(xmlDom, container, sendArgs, callback);
+                    self.initComplete(xmlDom, container, sendArgs, callback, path);
                 }
             });
             return;
@@ -523,14 +533,14 @@
                         var doc = parser.parseFromString(xh.responseText, 'text/xml');
                         if (self.useCache)
                             self.layoutCache[path] = doc;
-                        self.initComplete(doc, container, sendArgs, callback);
+                        self.initComplete(doc, container, sendArgs, callback, path);
                         return;
                     }
                     if (!xh.responseXML)
                         return self.handleError("unable to load file " + path + " : invalid xml format");
                     if (self.useCache)
                         self.layoutCache[path] = xh.responseXML;
-                    self.initComplete(xh.responseXML, container, sendArgs, callback);
+                    self.initComplete(xh.responseXML, container, sendArgs, callback, path);
                     return;
                 }
             }
@@ -692,17 +702,29 @@
     /**
      * apply the runnable node javascript to the XML view scope
      */
-    $jxhl.prototype.buildRunnable = function (baseid) {
+    $jxhl.prototype.buildRunnable = function (baseid, layoutPath) {
         if (!this.runnableObject ||
             !this.runnableObject["jxhl_inner_var$" + baseid] ||
             !this.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"])
             return;
 
         var self = this;
+        //calculate template path
+        function _calcPath(path, basePath){
+            if(path.substr(0,1) == '/') return path;
+            var arr = basePath.split('/');
+            arr.splice(arr.length-1, 1); //remove the last file name
+            return (arr.length>0 ? (arr.join('/') + '/'):'') + path;
+        }
+        
         function _run() {
-
-            var localvar_names = [];
-            var localvar_evals = [];
+            var localvar_names = [], localvar_evals = [], delay_temps = [];
+            var inner_templates = self.runnableObject["jxhl_inner_template$" + baseid];
+            
+            for(var i=0; i<inner_templates.length; i++){
+                delay_temps.push("self.init('"+_calcPath(inner_templates[i]["template"], layoutPath)+"', self.runnableObject['jxhl_inner_template$" + baseid +"']["+i+"]['target'], null, eval(self.runnableObject['jxhl_inner_template$" + baseid +"']["+i+"]['args']||null));");
+            }
+            
             for (var n in self.runnableObject["jxhl_inner_var$" + baseid]) {
                 if (n != "jxhl$runnable") {
                     //eval("var " + n + "=self.runnableObject['jxhl_inner_var$" + baseid + "']['" + n + "'];");
@@ -716,6 +738,7 @@
                 "+ localvar_evals.join("") + "\
                 var jxhl$localVars = ["+ localvar_names.join(",") + "]; \
                 "+ self.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"] + " \
+                ;"+ delay_temps.join("") +"\
                 }();";
             try {
                 eval(runnableFunc);
@@ -742,9 +765,12 @@
             container = typeof (c) == "string" ? (document.getElementById(c) || document.body) : c;
         if (!container.id) container.id = "_jxhl_autoid_" + new Date().getTime();
         if (!container.style.position) container.style.position = "relative";
-        container.visible = true;
-        container.isroot = true;
-        container.margin = [0, 0, 0, 0];
+        
+        if(!container.getAttribute("jxhl_control")){
+            container.visible = true;
+            container.isroot = true;
+            container.margin = [0, 0, 0, 0];
+        }
         //parse xml
         if (!pathOrText) {
             this.handleError("xml file path is null");
@@ -770,12 +796,14 @@
     /**
      * init completely, callback will apply, arguments will be transfered to runnable node scripts
      */
-    $jxhl.prototype.initComplete = function (xmldoc, container, sendArgs, callback) {
+    $jxhl.prototype.initComplete = function (xmldoc, container, sendArgs, callback, layoutPath) {
         if (!xmldoc)
             return;
-
         this.clearChildControls(container);
         this.clearControlRegion(container);
+        if(container.getAttribute("jxhl_control")) {
+            container.templateRoot = true;
+        }
         container.innerHTML = "";
         
         //a var to save local_var list of runnable scope
@@ -786,6 +814,8 @@
         this.runnableObject["jxhl_inner_var$" + container.id]["jxhl$container"] = container;
         //define jxhl$arguments for runnable scope, which is sendArgs
         this.runnableObject["jxhl_inner_var$" + container.id]["jxhl$arguments"] = sendArgs;
+        //define jxhl_inner_template
+        this.runnableObject["jxhl_inner_template$" + container.id] = [];
 
         var de = xmldoc.documentElement || xmldoc;
         de = de.cloneNode(true);
@@ -793,9 +823,11 @@
             this.parseControl(de.childNodes[i], container, container.id);
 
         this.calcControlPostion(container);
-        this.monitorElement(container);
+        if(!container.getAttribute("jxhl_control")) {
+            this.monitorElement(container);
+        }
 
-        this.buildRunnable(container.id);
+        this.buildRunnable(container.id, layoutPath);
 
         if (typeof (callback) == "function")
             callback();

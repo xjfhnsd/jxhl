@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <jxhl xmlns="http://halo-studio.com/jxhl"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://halo-studio.com/jxhl ../jxhl.xsd">
- 
     <panel dock="fill" border_width="1" css_text="border-style:solid; border-color:#cccccc;" local_var="top_container">
+        <panel dock="top" height="50" template="template/head-part.xml" template_args="tempArgs">
+        
+        </panel>
         <panel dock="top" height="30" id="top" border_width="0,0,1,0" css_text="border-style:solid; border-color:#cccccc; background:#fcfcfc;">
             <label dock="fill" margin="1,0,0,5" css_text="line-height:28px; color:blue; font-weight:bold;">Title section</label>
         </panel>
@@ -22,7 +24,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
         <![CDATA[
         var container = jxhl$container;
         var args = jxhl$arguments;
-        console.log(frame_test, jxhl$container, jxhl$arguments, jxhl$localVars);
+        var tempArgs = 'helloword!';
         ]]>
     </runnable>
 </jxhl>

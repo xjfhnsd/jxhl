@@ -31,7 +31,7 @@ It compatibles with IE7+, Chrome, Safari, Firefox, Opera and Mobile browsers on 
  - id
  - dock  -- *auto(not calc region), top, center, bottom, left, right, fill(full fill left region), fix(absolute full fill parent container, not calc region), float(not calc region, not set x,y), none(not calc region, just append to parent container)* `we usually need to use top/left/bottom/right/fill in normal html layout`
  - visible -- *1/0/true/false* 
- - width -- *integer(500 means 500px), percent(0.3* or 30% means 30% of parent container)*
+ - width -- `integer(500 means 500px), percent(0.3* or 30% means 30% of parent container)`
  - height -- *the same with width*
  - left -- *the same with width*
  - top -- *the same with width*

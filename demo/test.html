@@ -36,8 +36,11 @@
             <a onclick="loadView('include')">Inlcude Layout</a>
         </nav>
         <section>
-            <header id="location" class="location">
+            <header id="location" class="location" style="display:inline-block;">
                 
+            </header>
+            <header style="margin-left:10px; display:inline-block;">
+                <button type="button" style="cursor:pointer; font-size:22px;" onclick="toggleContainer();">Resize Container</button>
             </header>
         </section> 
     </div>
@@ -47,6 +50,17 @@
         
     <script type="text/javascript" src="../src/jxhl.js"></script>
     <script type="text/javascript">
+        function toggleContainer(){
+            var firstdiv = document.getElementById('firstdiv');
+            if(firstdiv.style.width == '760px'){
+                firstdiv.style.width = '900px';
+                firstdiv.style.height = '600px';
+            }
+            else{
+                firstdiv.style.width = '760px';
+                firstdiv.style.height = '420px';
+            }
+        }
         function loadView(name){
             jxhl.init(name+'.xml', 'firstdiv', null, null, function(){
                 document.getElementById('location').innerHTML = 'current layout : <span class="layout-name">' + name + '</span>';

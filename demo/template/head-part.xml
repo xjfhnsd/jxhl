@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<jxhl xmlns="http://halo-studio.com/jxhl"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://halo-studio.com/jxhl ../jxhl.xsd">
+ 
+    <html dock="fill" css_text="background:brown; color:#fff; text-align:center; vertical-align:middle; display:-webkit-flex; display:flex;">
+        <span style="margin:auto;">This is head part (by include template)</span>
+    </html>
+
+    <runnable>
+        <![CDATA[
+            console.log(jxhl$arguments);
+        ]]>
+    </runnable>
+</jxhl>
