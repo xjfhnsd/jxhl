@@ -3,6 +3,11 @@
     function $jxhl() {
         //use cache to save the layout
         this.useCache = false;
+        //use location hash to save history
+        this.useHashHistory = false;
+        this.historyStack = [];
+        this.historyIndex = 0;
+        this.historyModel = false; //when loading layout in history model, it will not add to history stack, just change history index
         this.layoutCache = {};
     }
 
@@ -771,6 +776,13 @@
             container.isroot = true;
             container.margin = [0, 0, 0, 0];
         }
+        
+        if(!container.getAttribute("jxhl_control") &&
+            !container.getAttribute('jxhl_history_disabled')){
+            //this is top container, can save history
+            this.historyPush(pathOrText, c, argType, sendArgs, callback);
+        }
+        
         //parse xml
         if (!pathOrText) {
             this.handleError("xml file path is null");
@@ -832,6 +844,45 @@
         if (typeof (callback) == "function")
             callback();
     }
+    
+    /**
+     * history push
+     */
+     $jxhl.prototype.historyPush = function(pathOrText, c, argType, sendArgs, callback){
+         if(!this.useHashHistory || this.historyModel) return;
+         //remove the end stack from current index
+         var ln = this.historyStack.length - this.historyIndex + 1;
+         if(ln>0) this.historyStack.splice(this.historyIndex + 1, ln);
+         this.historyStack.push([pathOrText, c, argType, sendArgs, callback]);
+         this.historyIndex++;
+         if(!argType || argType!='text') location.hash = pathOrText;
+     }
+     
+     /**
+      * history back
+      */
+     $jxhl.prototype.historyBack = function(){
+         if(!this.useHashHistory || this.historyIndex === 0) return;
+         this.historyModel = true;
+         this.historyIndex--;
+         var args = this.historyStack[this.historyIndex];
+         this.init(args[0], args[1], args[2], args[3], args[4]);
+         this.historyModel = false;
+         if(!args[2] || args[2]!='text') location.hash = args[0];
+     }
+     
+     /**
+      * history forward
+      */
+     $jxhl.prototype.historyForward = function(){
+         if(!this.useHashHistory || this.historyIndex+1>=this.historyStack.length) return;
+         this.historyModel = true;
+         this.historyIndex++;
+         var args = this.historyStack[this.historyIndex];
+         this.init(args[0], args[1], args[2], args[3], args[4]);
+         this.historyModel = false;
+         if(!args[2] || args[2]!='text') location.hash = args[0];
+     }
     
     /**
      * give an extension method

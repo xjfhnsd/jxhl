@@ -36,11 +36,13 @@
             <a onclick="loadView('include')">Inlcude Layout</a>
         </nav>
         <section>
+            <header style="margin-right:10px; display:inline-block;">
+                <button type="button" style="cursor:pointer; font-size:22px;" onclick="go(0)">Go Back</button>
+                <button type="button" style="cursor:pointer; font-size:22px;" onclick="go(1)">Forward</button>
+                <button type="button" style="cursor:pointer; font-size:22px;" onclick="toggleContainer();">Resize Container</button>
+            </header>
             <header id="location" class="location" style="display:inline-block;">
                 
-            </header>
-            <header style="margin-left:10px; display:inline-block;">
-                <button type="button" style="cursor:pointer; font-size:22px;" onclick="toggleContainer();">Resize Container</button>
             </header>
         </section> 
     </div>
@@ -50,6 +52,8 @@
         
     <script type="text/javascript" src="../src/jxhl.js"></script>
     <script type="text/javascript">
+        jxhl.useHashHistory = 1;
+        
         function toggleContainer(){
             var firstdiv = document.getElementById('firstdiv');
             if(firstdiv.style.width == '760px'){
@@ -67,6 +71,14 @@
             });
         }
         loadView("overview");
+        
+        function go(forward){
+            if(forward){
+                jxhl.historyForward();
+                return;        
+            }
+            jxhl.historyBack();
+        }
     </script>
 </body>
 </html>
