@@ -6,7 +6,7 @@
         //use location hash to save history
         this.useHashHistory = false;
         this.historyStack = [];
-        this.historyIndex = 0;
+        this.historyIndex = -1;
         this.historyModel = false; //when loading layout in history model, it will not add to history stack, just change history index
         this.layoutCache = {};
     }
@@ -850,9 +850,11 @@
      */
      $jxhl.prototype.historyPush = function(pathOrText, c, argType, sendArgs, callback){
          if(!this.useHashHistory || this.historyModel) return;
-         //remove the end stack from current index
-         var ln = this.historyStack.length - this.historyIndex + 1;
-         if(ln>0) this.historyStack.splice(this.historyIndex + 1, ln);
+         if(this.historyIndex>=0){
+             //remove the end stack from current index
+             var ln = this.historyStack.length - this.historyIndex - 1;
+             if(ln>0) this.historyStack.splice(this.historyIndex + 1, ln);
+         }
          this.historyStack.push([pathOrText, c, argType, sendArgs, callback]);
          this.historyIndex++;
          if(!argType || argType!='text') location.hash = pathOrText;
@@ -862,7 +864,8 @@
       * history back
       */
      $jxhl.prototype.historyBack = function(){
-         if(!this.useHashHistory || this.historyIndex === 0) return;
+         if(!this.useHashHistory || this.historyIndex === 0 
+         || this.historyStack.length <= 1) return;
          this.historyModel = true;
          this.historyIndex--;
          var args = this.historyStack[this.historyIndex];
