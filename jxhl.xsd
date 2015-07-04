@@ -153,6 +153,9 @@
         <xs:attribute name="border_width" type="xs:string"></xs:attribute>
         <xs:attribute name="margin" type="xs:string"></xs:attribute>
         <xs:attribute name="opacity" type="xs:decimal"></xs:attribute>
+        <xs:attribute name="local_var" type="xs:string"></xs:attribute>
+        <xs:attribute name="template" type="xs:string"></xs:attribute>
+        <xs:attribute name="template_args" type="xs:string"></xs:attribute>
     </xs:attributeGroup>
     <xs:element name="jxhl">
         <xs:complexType mixed="true">
