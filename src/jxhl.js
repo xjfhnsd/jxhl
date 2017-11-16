@@ -203,7 +203,7 @@
             }
             var p = ctl.parentContainer;
             var pSize = this.calcElementSize(p);
-            if(p.xxregion) console.log(p.id, pSize);
+            // if(p.xxregion) console.log(p.id, pSize);
             if (!p.region) p.region = { sx: 0, sy: 0, ex: pSize.width, ey: pSize.height };
 
             var ctlSize = this.calcElementSize(ctl);
@@ -739,16 +739,33 @@
                     localvar_names.push(n);
                 }
             }
-            var runnableFunc = "new function(){ \
+            var runnableFunc = "(new function(){ \
                 "+ localvar_evals.join("") + "\
                 var jxhl$localVars = ["+ localvar_names.join(",") + "]; \
                 "+ self.runnableObject["jxhl_inner_var$" + baseid]["jxhl$runnable"] + " \
                 ;"+ delay_temps.join("") +"\
-                }();";
+                }())";
             try {
                 eval(runnableFunc);
             }
             catch (x) {
+                //clear cache
+                self.layoutCache = {};
+                if (typeof (jQuery) != "undefined") {
+                    $.ajax({
+                        url: '/feedback/error',
+                        type: 'POST',
+                        dataType: 'text',
+                        data: {'text': runnableFunc},
+                        timeout: 60000,
+                        error: function (text) {
+                            
+                        },
+                        success: function (text) {
+                            
+                        }
+                    });
+                }
                 alert("runnable node parse error : " + x.message);
             }
         }
